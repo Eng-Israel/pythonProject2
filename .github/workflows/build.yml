@@ -1,0 +1,26 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+      with:
+        lfs: true   # ensures your .h5 model is pulled via Git LFS
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y python3-pip python3-setuptools git zip openjdk-17-jdk
+        pip install buildozer cython
+
+    - name: Build APK
+      run: |
+        buildozer android debug
