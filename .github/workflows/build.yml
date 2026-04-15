@@ -17,30 +17,24 @@ jobs:
       with:
         lfs: true
 
-    - name: Install dependencies
+    - name: Install dependencies and Android SDK
       run: |
-          sudo apt update
-          sudo apt install -y python3-pip python3-setuptools git zip openjdk-17-jdk wget unzip
-          pip install buildozer cython
-  
-         # Install Android SDK
-    wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O sdk-tools.zip
-    mkdir -p $HOME/android-sdk
-    unzip sdk-tools.zip -d $HOME/android-sdk/cmdline-tools
-    mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+        sudo apt update
+        sudo apt install -y python3-pip python3-setuptools git zip openjdk-17-jdk wget unzip
+        pip install buildozer cython
 
-    # Set environment variables
-    echo "export ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-    echo "export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH" >> $GITHUB_ENV
+        # Install Android SDK
+        wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O sdk-tools.zip
+        mkdir -p $HOME/android-sdk/cmdline-tools
+        unzip sdk-tools.zip -d $HOME/android-sdk/cmdline-tools
+        mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
 
-    # Install build-tools and platform
-    yes | sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+        # Set environment variables
+        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH" >> $GITHUB_ENV
 
-
-    - name: Build APK
-      run: |
-        buildozer android debug
-
+        # Install build-tools and platform
+        yes | sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
     - name: Build APK
       run: |
